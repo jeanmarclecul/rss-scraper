@@ -1,6 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { NewsSource, Article } from "./types";
+import { getHtml } from "./utils";
 
 export async function scrapeNews(source: NewsSource): Promise<Article[]> {
   try {
@@ -12,7 +13,9 @@ export async function scrapeNews(source: NewsSource): Promise<Article[]> {
       const $element = $(element);
       const title = $element.find(source.selectors.title).text().trim();
       const summary = $element.find(source.selectors.summary).text().trim();
-      const imageUrl = $element.find(source.selectors.image).attr("src") || "";
+      const imageUrl =
+        $element.find(source.selectors.image).find("img").attr("data-src") ||
+        "";
       const url = $element.find("a").attr("href") || "";
 
       if (title && summary) {
@@ -24,6 +27,8 @@ export async function scrapeNews(source: NewsSource): Promise<Article[]> {
           date: new Date(),
         });
       }
+
+      console.log(articles[articles.length - 1]);
     });
 
     return articles;
