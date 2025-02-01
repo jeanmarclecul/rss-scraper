@@ -12,13 +12,13 @@ export const newsSources: NewsSource[] = [
     },
   },
   {
-    name: "lemonde2",
-    url: "https://www.lemonde.fr/actualite-en-continu/",
+    name: "premiereseries",
+    url: "https://www.premiere.fr/Series/News-Series",
     selectors: {
-      article: ".teaser.teaser--inline-picture",
-      title: ".teaser__title",
-      summary: ".teaser__desc",
-      image: ".teaser__figure--page",
+      article: ".col-sm-6",
+      title: ".thumbnail-heading",
+      summary: ".thumbnail-heading",
+      image: ".thumbnail-header",
     },
   },
   // Ajoutez d'autres sources ici avec leurs sélecteurs spécifiques
