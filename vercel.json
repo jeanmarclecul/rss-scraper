@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "index.ts",
+      "src": "src/index.ts",
       "use": "@vercel/node"
     }
   ],
   "routes": [
     {
-      "src": "/rss/lemonde",
-      "dest": "/api/rss-lemonde"
+      "src": "/rss/(.*)",
+      "dest": "src/index.ts"
     }
   ]
 }

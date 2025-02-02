@@ -12,7 +12,7 @@ export const newsSources: NewsSource[] = [
     },
   },
   {
-    name: "premiereseries",
+    name: "premiere-series",
     url: "https://www.premiere.fr/Series/News-Series",
     selectors: {
       article: ".col-sm-6",
