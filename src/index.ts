@@ -1,5 +1,5 @@
 import express from "express";
-import { newsSources } from "./config";
+import { newsSources } from "./scrapConfig";
 import { scrapeNews } from "./scraper";
 import { generateRssFeed } from "./rss";
 
