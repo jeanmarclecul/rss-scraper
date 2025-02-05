@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
-import { NewsSource, Article } from "./types";
-import { getHtml } from "./utils";
+import { NewsSource, Article } from "../models/types";
+import { getHtml } from "../utils";
 
 const imgAttributes = [
   "src",

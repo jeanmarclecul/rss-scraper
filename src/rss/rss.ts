@@ -1,5 +1,5 @@
 import RSS from "rss";
-import { Article } from "./types";
+import { Article } from "../models/types";
 
 export function generateRssFeed(
   sourceName: string,

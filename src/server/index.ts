@@ -1,7 +1,7 @@
 import express from "express";
-import { newsSources } from "./scrapConfig";
-import { scrapeNews } from "./scraper";
-import { generateRssFeed } from "./rss";
+import { newsSources } from "../../data/scrapConfig";
+import { scrapeNews } from "../scraper/scraper";
+import { generateRssFeed } from "../rss/rss";
 
 const app = express();
 const port = 3000;
