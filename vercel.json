@@ -11,5 +11,8 @@
       "src": "/rss/(.*)",
       "dest": "src/server/index.ts"
     }
-  ]
+  ],
+  "build": {
+    "cache": false
+  }
 }

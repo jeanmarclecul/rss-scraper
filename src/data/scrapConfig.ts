@@ -26,7 +26,7 @@ export const newsSources: NewsSource[] = [
   {
     name: "ecranlarge-series",
     url: "https://www.ecranlarge.com/series",
-    img: "https://www.premiere.fr/themes/custom/prem_thm/assets/images/logo.png",
+    img: "https://www.ecranlarge.com/content/themes/ecran-large/assets/img/logo.svg",
     selectors: {
       article: ".relative.mb-3",
       title: ".relative.font-bold.js-shaved",
