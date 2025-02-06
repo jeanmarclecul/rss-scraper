@@ -1,5 +1,5 @@
 import express from "express";
-import { newsSources } from "../../data/scrapConfig";
+import { newsSources } from "../data/scrapConfig";
 import { scrapeNews } from "../scraper/scraper";
 import { generateRssFeed } from "../rss/rss";
 
@@ -28,7 +28,7 @@ app.get("/rss/:source", async (req, res) => {
 
   try {
     const articles = await scrapeNews(source);
-    const rssFeed = generateRssFeed(sourceName, articles);
+    const rssFeed = generateRssFeed(sourceName, source.img, articles);
 
     res.header("Content-Type", "application/xml");
     res.send(rssFeed);
@@ -38,13 +38,17 @@ app.get("/rss/:source", async (req, res) => {
   }
 });
 
-// app.get("/rsslist", async (req, res) => {
-//   let output = "";
-//   newsSources.forEach((source) => {
-//     output += "<br>/rss/" + source.name;
-//   });
-//   res.send(output);
-// });
+app.get("/", async (req, res) => {
+  let output = "";
+  const baseUrl = `${req.protocol}://${req.get("host")}`;
+  newsSources.forEach((source) => {
+    const url = `${baseUrl}/rss/${source.name}`;
+    output += `<br><a href="${url}">${url}</a>`;
+  });
+  res.send(output);
+
+  return true;
+});
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

@@ -3,6 +3,7 @@ import { Article } from "../models/types";
 
 export function generateRssFeed(
   sourceName: string,
+  rssImgUrl: string,
   articles: Article[]
 ): string {
   const feed = new RSS({
@@ -12,6 +13,7 @@ export function generateRssFeed(
     site_url: `http://localhost:3000`,
     language: "fr",
     pubDate: new Date().toUTCString(), // Add publication date
+    image_url: `${rssImgUrl}`,
   });
 
   articles.forEach((article) => {

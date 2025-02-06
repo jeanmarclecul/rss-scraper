@@ -1,6 +1,7 @@
 export interface NewsSource {
   name: string;
   url: string;
+  img: string;
   selectors: {
     article: string;
     title: string;

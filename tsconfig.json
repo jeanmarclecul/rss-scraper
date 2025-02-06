@@ -9,5 +9,5 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*", "data/scrapConfig.ts"]
+  "include": ["src/**/*", "src/data/scrapConfig.ts"]
 }
