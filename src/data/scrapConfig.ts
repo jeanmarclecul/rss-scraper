@@ -56,4 +56,37 @@ export const newsSources: NewsSource[] = [
       image: ".thumbnail-unit.gameblog",
     },
   },
+  {
+    name: "fantabobgames",
+    url: "https://www.youtube.com/@fantabobgames/videos/",
+    img: "https://yt3.googleusercontent.com/DocgMJ9Ahj1iU9Z4HQEY7tKhxWt1cmRVBBMmCzp3cB1_mR_dobz45R3hQFVarQ7Ig6jbIfwXng=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj",
+    selectors: {
+      article: "",
+      title: "",
+      summary: "",
+      image: "",
+    },
+  },
+  {
+    name: "joueurdugrenier",
+    url: "https://www.youtube.com/@joueurdugrenier/videos/",
+    img: "https://yt3.googleusercontent.com/LHQ0TwB9lMJzyxC88DsSTKZxEgORRJdds2exi8HjwOD3iP_naSEEXY67GSymVJKlGeVwwoz3=w1060-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj",
+    selectors: {
+      article: "",
+      title: "",
+      summary: "",
+      image: "",
+    },
+  },
+  {
+    name: "benzaieTV",
+    url: "https://www.youtube.com/@benzaieTV/videos/",
+    img: "https://yt3.googleusercontent.com/a1TU8u3OC7gOWZX1X2s_stBjsLXUNEjTkhrq_QVd3eKETQAmzBx_dK2lHPz0uSYT612Wdp2Y=w1060-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj",
+    selectors: {
+      article: "",
+      title: "",
+      summary: "",
+      image: "",
+    },
+  },
 ];
