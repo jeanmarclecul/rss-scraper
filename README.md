@@ -1,4 +1,4 @@
-Scrap news from websites with locators informatiin. 
+Scrap news from websites with locators informations. 
 
 Update src/data/scrapConfig.ts with url and locators for scraping.
 
