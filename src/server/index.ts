@@ -2,9 +2,37 @@ import express from "express";
 import { newsSources } from "../data/scrapConfig";
 import { scrapeNews } from "../scraper/scraper";
 import { generateRssFeed } from "../rss/rss";
+import { NewsSource } from "../models/types";
 
 const app = express();
 const port = 3000;
+
+app.get("/rss/youtube/:channelName", async (req, res) => {
+  const channelName = req.params.channelName;
+  const source: NewsSource = {
+    name: channelName,
+    url: `https://www.youtube.com/@${channelName}/videos`,
+    img: "https://www.youtube.com/s/desktop/d743f78b/img/favicon_96x96.png", // Generic YouTube icon
+    selectors: {
+      article: "",
+      title: "",
+      summary: "",
+      image: "",
+    },
+  };
+
+  try {
+    console.log(source);
+    const articles = await scrapeNews(source);
+    const rssFeed = generateRssFeed(source.name, source.img, articles);
+
+    res.header("Content-Type", "application/xml");
+    res.send(rssFeed);
+  } catch (error) {
+    console.error(`Error generating YouTube RSS for ${channelName}:`, error);
+    res.status(500).send("Error generating YouTube RSS feed");
+  }
+});
 
 app.get("/rss/:source", async (req, res) => {
   const sourceName = req.params.source;
@@ -56,4 +84,5 @@ app.listen(port, () => {
   newsSources.forEach((source) => {
     console.log(`- http://localhost:${port}/rss/${source.name}`);
   });
+  console.log(`- http://localhost:${port}/rss/youtube/<channelName>`);
 });
