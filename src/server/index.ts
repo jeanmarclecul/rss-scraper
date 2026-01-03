@@ -7,6 +7,51 @@ import { NewsSource } from "../models/types";
 const app = express();
 const port = 3000;
 
+app.get("/rss/custom", async (req, res) => {
+  const { name, url, article, title, summary, image, img } = req.query;
+
+  // Ensure all required parameters are strings
+  if (
+    typeof name !== "string" ||
+    typeof url !== "string" ||
+    typeof article !== "string" ||
+    typeof title !== "string" ||
+    typeof summary !== "string" ||
+    typeof image !== "string"
+  ) {
+    return res
+      .status(400)
+      .send(
+        "Invalid query parameters. All parameters must be strings. Example: /rss/custom?name=x&url=y&article=z&title=t&summary=s&image=i"
+      );
+  }
+
+  // Construction dynamique de la config avec des types garantis
+  const source: NewsSource = {
+    name,
+    url,
+    img: typeof img === "string" ? img : "", // Provide a default empty string if img is not a string
+    selectors: {
+      article,
+      title,
+      summary,
+      image,
+    },
+  };
+
+  try {
+    const articles = await scrapeNews(source);
+    console.log("Scraped articles:", articles);
+    const rssFeed = generateRssFeed(name, source.img, articles);
+
+    res.header("Content-Type", "application/xml");
+    res.send(rssFeed);
+  } catch (error) {
+    console.error(`Error generating custom RSS:`, error);
+    res.status(500).send("Error generating custom RSS feed");
+  }
+});
+
 app.get("/rss/youtube/:channelName", async (req, res) => {
   const channelName = req.params.channelName;
   const source: NewsSource = {
@@ -85,4 +130,7 @@ app.listen(port, () => {
     console.log(`- http://localhost:${port}/rss/${source.name}`);
   });
   console.log(`- http://localhost:${port}/rss/youtube/<channelName>`);
+  console.log(
+    `- http://localhost:${port}/rsscustom?name=x&url=y&article=z&title=t&summary=s&image=i`
+  );
 });

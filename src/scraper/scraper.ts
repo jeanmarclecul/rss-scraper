@@ -147,6 +147,7 @@ async function scrapeYouTubeVideos(channelUrl: string): Promise<Article[]> {
 async function scrapeGenericWebsite(source: NewsSource): Promise<Article[]> {
   try {
     const response = await axios.get(source.url);
+    const baseUrl = new URL(source.url).origin;
     const $ = cheerio.load(response.data);
     const articles: Article[] = [];
 
@@ -161,8 +162,10 @@ async function scrapeGenericWebsite(source: NewsSource): Promise<Article[]> {
         articles.push({
           title,
           summary,
-          imageUrl,
-          url: url.startsWith("http") ? url : `${source.url}${url}`,
+          imageUrl: imageUrl?.startsWith("http")
+            ? imageUrl
+            : `${baseUrl}${imageUrl}`,
+          url: url.startsWith("http") ? url : `${baseUrl}${url}`,
           date: new Date(),
         });
       }
