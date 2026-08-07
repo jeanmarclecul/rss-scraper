@@ -1,7 +1,26 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import { NewsSource, Article } from "../models/types";
-import { getHtml } from "../utils";
+
+interface CheapSharkStore {
+  storeID: string;
+  storeName: string;
+  isActive: number;
+  images: {
+    banner: string;
+    logo: string;
+    icon: string;
+  };
+}
+
+interface CheapSharkDeal {
+  title: string;
+  storeID: string;
+  salePrice: string;
+  normalPrice: string;
+  dealID: string;
+  thumb: string;
+}
 
 const imgAttributes = [
   "src",
@@ -72,8 +91,8 @@ const getImageSrc = ($element: any) => {
 
   const bgStyle = $element.css("background-image");
   if (bgStyle && bgStyle !== "none") {
-    const urlMatch = bgStyle.match(/url\(['"]?([^'")]*)['"]?\)/);
-    if (urlMatch && urlMatch[1]) return urlMatch[1];
+    const urlMatch = /url\(['"]?([^'")]*)['"]?\)/.exec(bgStyle);
+    if (urlMatch?.[1]) return urlMatch[1];
   }
 
   return "";
@@ -83,6 +102,8 @@ export async function scrapeNews(source: NewsSource): Promise<Article[]> {
   try {
     if (isYouTubeLink(source.url)) {
       return await scrapeYouTubeVideos(source.url);
+    } else if (source.url.includes("cheapshark")) {
+      return await scrapeCheapSharkDeals();
     } else {
       return await scrapeGenericWebsite(source);
     }
@@ -105,13 +126,13 @@ async function scrapeYouTubeVideos(channelUrl: string): Promise<Article[]> {
     const scriptTag = $("script")
       .toArray()
       .map((el) => $(el).html())
-      .find((text) => text && text.includes("ytInitialData"));
+      .find((text) => text?.includes("ytInitialData"));
 
     if (!scriptTag) {
       throw new Error("ytInitialData not found in HTML");
     }
 
-    const jsonMatch = scriptTag.match(/ytInitialData\s*=\s*(\{[\s\S]*?\});/);
+    const jsonMatch = /ytInitialData\s*=\s*(\{[\s\S]*?\});/.exec(scriptTag);
 
     if (!jsonMatch) {
       throw new Error("Failed to extract ytInitialData JSON");
@@ -174,6 +195,54 @@ async function scrapeGenericWebsite(source: NewsSource): Promise<Article[]> {
     return articles;
   } catch (error) {
     console.error(`Error scraping ${source.name}:`, error);
+    return [];
+  }
+}
+
+// ✅ CheapShark Free Games Scraper
+async function scrapeCheapSharkDeals(): Promise<Article[]> {
+  try {
+    const dealsResponse = await axios.get("https://www.cheapshark.com/api/1.0/deals", {
+      headers: { "User-Agent": "RSS-Scraper/1.0 (contact@example.com)" },
+      params: {
+        upperPrice: 0,
+        pageSize: 20,
+      },
+    });
+
+    const storesResponse = await axios.get("https://www.cheapshark.com/api/1.0/stores", {
+      headers: { "User-Agent": "RSS-Scraper/1.0 (contact@example.com)" },
+    });
+
+    const deals: CheapSharkDeal[] = dealsResponse.data;
+    const stores: CheapSharkStore[] = storesResponse.data;
+
+    const storesMap = new Map<string, CheapSharkStore>();
+    stores.forEach((store) => {
+      storesMap.set(store.storeID, store);
+    });
+
+    const articles: Article[] = deals.map((deal) => {
+      const store = storesMap.get(deal.storeID);
+      const storeName = store?.storeName || "Unknown Store";
+      const storeIcon = store?.images?.icon ? `https://www.cheapshark.com${store.images.icon}` : "";
+      const dealUrl = `https://www.cheapshark.com/redirect?dealID=${deal.dealID}`;
+
+      const storeIconHtml = storeIcon ? `<img src="${storeIcon}" alt="${storeName}" style="vertical-align: middle; height: 16px;">` : "";
+      const summary = `${storeIconHtml} <strong>${storeName}</strong> | Price: ${deal.salePrice}€ (was ${deal.normalPrice}€)`;
+
+      return {
+        title: deal.title,
+        summary,
+        imageUrl: deal.thumb,
+        url: dealUrl,
+        date: new Date(),
+      };
+    });
+
+    return articles;
+  } catch (error) {
+    console.error(`Error scraping CheapShark:`, error);
     return [];
   }
 }

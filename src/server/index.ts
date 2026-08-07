@@ -5,7 +5,10 @@ import { generateRssFeed } from "../rss/rss";
 import { NewsSource } from "../models/types";
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
+
+// Disable X-Powered-By header for security
+app.disable('x-powered-by');
 
 app.get("/rss/custom", async (req, res) => {
   const { name, url, article, title, summary, image, img } = req.query;
@@ -123,14 +126,20 @@ app.get("/", async (req, res) => {
   return true;
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
-  console.log("Available RSS feeds:");
-  newsSources.forEach((source) => {
-    console.log(`- http://localhost:${port}/rss/${source.name}`);
+// Only listen if not running in Vercel
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+    console.log("Available RSS feeds:");
+    newsSources.forEach((source) => {
+      console.log(`- http://localhost:${port}/rss/${source.name}`);
+    });
+    console.log(`- http://localhost:${port}/rss/youtube/<channelName>`);
+    console.log(
+      `- http://localhost:${port}/rsscustom?name=x&url=y&article=z&title=t&summary=s&image=i`
+    );
   });
-  console.log(`- http://localhost:${port}/rss/youtube/<channelName>`);
-  console.log(
-    `- http://localhost:${port}/rsscustom?name=x&url=y&article=z&title=t&summary=s&image=i`
-  );
-});
+}
+
+// Export for Vercel
+export = app;

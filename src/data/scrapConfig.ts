@@ -89,4 +89,15 @@ export const newsSources: NewsSource[] = [
       image: "",
     },
   },
+  {
+    name: "cheapshark-free",
+    url: "https://www.cheapshark.com/api/1.0/deals",
+    img: "https://www.cheapshark.com/favicon.ico",
+    selectors: {
+      article: "",
+      title: "",
+      summary: "",
+      image: "",
+    },
+  },
 ];

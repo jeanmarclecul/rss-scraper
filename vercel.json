@@ -1,18 +1,10 @@
 {
-  "version": 2,
-  "builds": [
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "rewrites": [
     {
-      "src": "src/server/index.ts",
-      "use": "@vercel/node"
+      "source": "/(.*)",
+      "destination": "/api"
     }
-  ],
-  "routes": [
-    {
-      "src": "/rss/(.*)",
-      "dest": "src/server/index.ts"
-    }
-  ],
-  "build": {
-    "cache": false
-  }
+  ]
 }
